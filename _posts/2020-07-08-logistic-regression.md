@@ -15,9 +15,9 @@ Logistic regression is a linear model employed for classification tasks in super
 
 Recall that binary classification is the problem of predicting the class $$ y \in \{0, 1\} $$ of an object given a set of input features $$ x \in \mathbb{R}^n $$. To be able to train a model capable of making such predictions, we are given a set of correctly labeled examples: a set of points $$ (x^{(i)}, y^{(i)}) $$ with $$ i \in [1, m] $$.
 
-As I am a big fan of board games, I will develop an example using [this Kaggle dataset](https://www.kaggle.com/mrpantherson/board-game-data) on board game data. The dataset comprises 5000 real boardgames, together with features as their number of players, average game duration, number of people that have bought the game, and so on. The games are ranked from best to worst popular using a rating defined by [this website](https://boardgamegeek.com/browse/boardgame).
+As I am a big fan of board games, I will develop an example using [this Kaggle dataset](https://www.kaggle.com/mrpantherson/board-game-data) on board game data. The dataset comprises 5000 real boardgames, together with features as their number of players, average game duration, number of people that have bought the game, and so on. The games are ranked from best to worst popular using a rating defined by [this website](https://boardgamegeek.com/browse/boardgame). [This Kaggle kernel](https://www.kaggle.com/anarthal/board-game-logistic-regression) contains the full code for the example we will develop. I will show some snippets here when relevant.
 
-We will try to predict whether a board game is "top" or not, where we define a "top board game" as one being among the best 1000. Thus, y = 1 if the game is one of the top 1000, and y = 0 otherwise.
+We will try to predict whether a board game is "top" or not, where we define a "top board game" as one being among the best 1000. Thus, $$ y = 1 $$ if the game is one of the top 1000, and $$ y = 0 $$ otherwise.
 
 Our task is to build a model to predict y. For the sake of example, we will just use the two most relevant input features (this will allow us to visualize the results better):
 
@@ -49,7 +49,7 @@ If we plot the function, we get the following shape:
 - Big positive values of z output values close to one.
 - Inputs close to zero output values close to 0.5.
 
-We can interpret this number as the probability that the given example belongs to the class y = 1. So, if we perform this calculation for a certain example and obtain 0.1, that means that our model is convinced that this game is not top ranked. Conversely, if the had obtained 0.9, that would mean that our model is almost sure that the game is top ranked. We can take 0.5 as the boundary, such that we predict y = 0 if $$ y_{prob} < 0.5 $$, and y = 1 otherwise.
+We can interpret this number as the probability that the given example belongs to the class $$ y = 1 $$. So, if we perform this calculation for a certain example and obtain 0.1, that means that our model is convinced that this game is not top ranked. Conversely, if the had obtained 0.9, that would mean that our model is almost sure that the game is top ranked. We can take 0.5 as the boundary, such that we predict $$ y = 0 $$ if $$ y_{prob} < 0.5 $$, and y = 1 otherwise.
 
 In the more general case, we have n input features. We can represent each example as a column vector of features $$ x \in \mathbb{R}^n $$. We can also define a column vector containing all the parameters in our model, $$ \theta \in \mathbb{R}^n $$. With this notation, we can write:
 
@@ -76,7 +76,7 @@ We can see that this function depends on the model parameters $$ \theta_0 $$ and
 
 ### Example: the board game model
 
-Let's use `sklearn` Python library to train a logistic regression model for our board game problem. [This Kaggle kernel](https://www.kaggle.com/anarthal/board-game-logistic-regression) has the complete code listing, together with some exploratory data analysis. We will show here the most relevant parts for our task. First of all, some imports:
+Let's use `sklearn` Python library to train a logistic regression model for our board game problem. First of all, some imports:
 
 ```py
 from sklearn.linear_model import LogisticRegression
@@ -118,7 +118,17 @@ As you can see, points in the lower left corner are much more likely to have y=0
 
 The dashed black line is the decision boundary. The points in the red region are classified as negatives and the ones in the green region, as positives.
 
+Let's now visualize the predicted probability of each example.
 
+![Probabilities]({{ "/assets/img/logistic-regression/probabilities.png" | relative_url }})
+
+Our model has a clear opinion on examples far away from the decision boundary. However, things get blurrier when we approach the dashed line. Note that points in the dashed line have $$ y_{prob} = 0.5 $$.
+
+We talked earlier about the cost function, and how it penalizes the model making the wrong decisions. The following figure shows the cost associated to each example (the bigger the circle, the greater the cost):
+
+![Costs]({{ "/assets/img/logistic-regression/costs.png" | relative_url }})
+
+As we mentioned earlier, misclassified examples are the ones incurring in greater cost. The further a misclassified point is from the decision boundary, the more sure our model is about making the wrong decision, and thus, the greater the cost. Fitting the model is equivalent to placing the dashed line in the position that minimizes the overall cost.
 
 ## Evaluating the model performance
 
@@ -136,193 +146,19 @@ That means that our model predicted 90.88% of the examples in the test set corre
 
 ## Conclusion
 
-This finishes our study of logistic regression. We have gone thrhough basic 
+This finishes our study of logistic regression. I hope the example has helped to clarify some of the maths behind the model.
 
-## Predictions: a linear model
+A couple final thoughts:
 
-As every model in Machine Learning, 
+- For the sake of example, we have just considered two features. There are plenty of other variables to improve our model.
+- The two employed features have very different scales. It may be beneficial for the model to normalize the variables, so they have a similar range and variance.
+- Another term is usually added to the cost function presented here, called the regularization term, which helps prevent the overfitting problem. As this is not a concern in a model as simple as ours, we have omitted it here.
 
-- How to make predictions
-  - Linear model
-  - Sigmoid activation
-  - Probability threshold
-- Cost function
-  - Why does it make sense
-  - Maths behind: max likelihood estimator and GLM
-- Training the model
-- An example
-- The decision boundary
-- Going beyond a linear model
-  - Polynomial features
-  - Overfitting
-  - Learning curves
-  - Cost vs. num iterations curves
-- The effect of changing the decision threshold
+Hope you have liked the post! Feedback and suggestions are always welcome.
 
-Further thoughts
- - f1 score
- - scaling
- - more features
- - Regularization
+## References
 
-Note that the $$ theta_1 $$ (the weight assigned to `owned`) is very small because the scale of the feature is big in comparison to `weight`. When such a difference in scales is present, it's  
-
-## Mathematics
-
-The mathematics powered by [**MathJax**](https://www.mathjax.org/):
-
-$$ \sum_{n=1}^\infty 1/n^2 = \frac{\pi^2}{6} $$
-
-When \\(a \ne 0\\), there are two solutions to \\(ax^2 + bx + c = 0\\) and they are
-
-$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a} $$
-
-## Titles
-
-***
-# H1
-
-<h2 data-toc-skip>H2</h2>
-
-<h3 data-toc-skip>H3</h3>
-
-#### H4
-
-***
-
-## Paragraph
-
-I wandered lonely as a cloud
-
-That floats on high o'er vales and hills,
-
-When all at once I saw a crowd,
-
-A host, of golden daffodils;
-
-Beside the lake, beneath the trees,
-
-Fluttering and dancing in the breeze.
-
-## Block Quote
-
-> This line to shows the Block Quote.
-
-## Tables
-
-|Company|Contact|Country|
-|:---|:--|---:|
-|Alfreds Futterkiste | Maria Anders | Germany
-|Island Trading | Helen Bennett | UK
-|Magazzini Alimentari Riuniti | Giovanni Rovelli | Italy
-
-## Link
-
-<http://127.0.0.1:4000>
-
-
-## Footnote
-
-Click the hook will locate the footnote[^footnote].
-
-
-## Image
-
-![Desktop View]({{ "/assets/img/sample/mockup.png" | relative_url }})
-
-
-## Inline code
-
-This is an example of `Inline Code`.
-
-
-
-## Code Snippet
-
-### Common
-
-```
-This is a common code snippet, without syntax highlight and line number.
-```
-
-### Specific Languages
-
-#### Console
-
-```console
-$ date
-Sun Nov  3 15:11:12 CST 2019
-```
-
-
-#### Terminal
-
-```terminal
-$ env |grep SHELL
-SHELL=/usr/local/bin/bash
-PYENV_SHELL=bash
-```
-
-#### Ruby
-
-```ruby
-def sum_eq_n?(arr, n)
-  return true if arr.empty? && n == 0
-  arr.product(arr).reject { |a,b| a == b }.any? { |a,b| a + b == n }
-end
-```
-
-#### Shell
-
-```shell
-if [ $? -ne 0 ]; then
-    echo "The command was not successful.";
-    #do the needful / exit
-fi;
-```
-
-#### Liquid
-
-{% raw %}
-```liquid
-{% if product.title contains 'Pack' %}
-  This product's title contains the word Pack.
-{% endif %}
-```
-{% endraw %}
-
-#### HTML
-
-```html
-<div class="sidenav">
-  <a href="#contact">Contact</a>
-  <button class="dropdown-btn">Dropdown
-    <i class="fa fa-caret-down"></i>
-  </button>
-  <div class="dropdown-container">
-    <a href="#">Link 1</a>
-    <a href="#">Link 2</a>
-    <a href="#">Link 3</a>
-  </div>
-  <a href="#contact">Search</a>
-</div>
-```
-
-**Horizontal Scrolling**
-
-```html
-<div class="panel-group">
-  <div class="panel panel-default">
-    <div class="panel-heading" id="{{ category_name }}">
-      <i class="far fa-folder"></i>
-      <p>This is a very long long long long long long long long long long long long long long long long long long long long long line.</p>
-      </a>
-    </div>
-  </div>
-</div>
-```
-
-
-## Reverse Footnote
-
-[^footnote]: The footnote source.
+* Kaggle dataset on board game data: https://www.kaggle.com/mrpantherson/board-game-data.
+* Board Game Geek: https://boardgamegeek.com/.
+* Machine Learning, Coursera course by Andrew Ng: https://www.coursera.org/learn/machine-learning.
+* Sklearn documentation: https://scikit-learn.org/stable/
