@@ -54,6 +54,10 @@ $prompt-newer: "{{ site.data.label.post.button.next }}";
   line-height: 2rem;
 }
 
+.post-content p {
+  text-align: justify;
+}
+
 .post-navigation {
   padding-top: 3rem;
   padding-bottom: 4rem;
