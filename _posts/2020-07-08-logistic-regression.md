@@ -22,7 +22,7 @@ We will try to predict whether a board game is "top" or not, where we define a "
 Our task is to build a model to predict y. For the sake of example, we will just use the two most relevant input features, as this will allow us to visualize the results better:
 
 - $$ x_1 $$ will be the *number of buyers* (`owned` in our dataset). As it seems logical, there is a strong positive correlation between the rating and the number of buyers: popular games are generally bought by more people than other games.
-- $$ x_2 $$ will be the game `weight`. Yes, apparently people like games with big boxes and a lot of stuff inside!
+- $$ x_2 $$ will be `weight`, which measures how complex a game is, in a scale from 1.0 to 5.0. Games with higher `weight` have more complicated rules and more complex mechanics. There is a positive correlation between rating and `weight` (top-ranked games tend to be complex ones).
 
 In this case, we have than the number of training examples m = 5000 and the number of features n = 2. Each example $$ x^{(i)} \in \mathbb{R}^2 $$.
 
