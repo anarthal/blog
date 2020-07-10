@@ -159,7 +159,8 @@ Hope you have liked the post! Feedback and suggestions are always welcome.
 
 ## References
 
-* Kaggle dataset on board game data: https://www.kaggle.com/mrpantherson/board-game-data.
-* Board Game Geek: https://boardgamegeek.com/.
-* Machine Learning, Coursera course by Andrew Ng: https://www.coursera.org/learn/machine-learning.
-* Sklearn documentation: https://scikit-learn.org/stable/
+* Kaggle dataset on board game data: <https://www.kaggle.com/mrpantherson/board-game-data>.
+* Insights - Geek Board Game (Kaggle kernel): <https://www.kaggle.com/devisangeetha/insights-geek-board-game>.
+* Board Game Geek: <https://boardgamegeek.com/>.
+* Machine Learning, Coursera course by Andrew Ng: <https://www.coursera.org/learn/machine-learning/>.
+* Sklearn documentation: <https://scikit-learn.org/stable/>
