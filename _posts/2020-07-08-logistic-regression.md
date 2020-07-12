@@ -9,11 +9,17 @@ math: true
 
 In this post I will talk about one of the most basic models in Machine Learning: logistic regression. This post doesn't assume any previous knowledge of logistic regression. Some prior knowledge on machine learning may be beneficial.
 
-Logistic regression is a linear model employed for classification tasks in supervised learning. We will go through the basic maths behind the model and work through an example of binary classification.
+## Introduction
+
+Logistic regression is a machine learning model used to solve [classification](https://machinelearningmastery.com/types-of-classification-in-machine-learning/) tasks. In a classification problem, we build a model that predicts the class label of an object, given its input features. In this post we will develop a model that predicts whether a board game is good or not given features like its complexity or number of players. Classification tasks like this, where the label has only two possible options, are called binary classification tasks. They are [supervised learning](https://en.wikipedia.org/wiki/Supervised_learning) problems.
+
+Logistic regression is a [generalized linear model](https://en.wikipedia.org/wiki/Generalized_linear_model). It is generalization of [linear regression](https://en.wikipedia.org/wiki/Linear_regression), which predictins an output variable as a linear combination of the input features (e.g. predicts the price of a house as a linear combination of its area, number of bedrooms...). It may be beneficial for the reader to have some knowledge on linear regression before reading this post, although it is not required. 
+
+In the following sections we will go through the basic maths behind logistic regression and work through an example of how to apply this model to binary classification.
 
 ## Problem statement
 
-Recall that binary classification is the problem of predicting the class $$ y \in \{0, 1\} $$ of an object given a set of input features $$ x \in \mathbb{R}^n $$. To be able to train a model capable of making such predictions, we are given a set of correctly labeled examples: a set of points $$ (x^{(i)}, y^{(i)}) $$ with $$ i \in [1, m] $$.
+Binary classification is the problem of predicting the class $$ y \in \{0, 1\} $$ of an object given a set of input features $$ x \in \mathbb{R}^n $$. To be able to train a model capable of making such predictions, we are given a set of correctly labeled examples: a set of points $$ (x^{(i)}, y^{(i)}) $$ with $$ i \in [1, m] $$.
 
 As I am a big fan of board games, I will develop an example using [this Kaggle dataset](https://www.kaggle.com/mrpantherson/board-game-data) on board game data. The dataset comprises 5000 real boardgames, together with features as their number of players, average game duration, number of people that have bought the game, and so on. The games are ranked from best to not-as-good using a rating defined by [this website](https://boardgamegeek.com/browse/boardgame). [This Kaggle kernel](https://www.kaggle.com/anarthal/board-game-logistic-regression) contains the full code for the example we will develop. I will show some snippets here when relevant.
 
@@ -164,3 +170,5 @@ Hope you have liked the post! Feedback and suggestions are always welcome.
 * Board Game Geek: <https://boardgamegeek.com/>.
 * Machine Learning, Coursera course by Andrew Ng: <https://www.coursera.org/learn/machine-learning/>.
 * Sklearn documentation: <https://scikit-learn.org/stable/>
+* <https://machinelearningmastery.com/types-of-classification-in-machine-learning/>
+* <https://en.wikipedia.org/wiki/Supervised_learning>
