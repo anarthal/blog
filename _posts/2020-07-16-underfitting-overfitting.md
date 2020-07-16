@@ -66,9 +66,57 @@ X_train, X_test, y_train, y_test = train_test_split(df, y,
 
 Note that sklearn will randomly shuffle the dataset before performing the split. Passing a constant as `random_state` ensures consistent results between runs.
 
-The following figure shows the aforementioned split. Lighter points belong to the training set, while darker ones belong to the test set. Note that the train and test set appear to be similarly distributed, which is good.
+The following figure shows the aforementioned split. Lighter points belong to the training set, while darker ones belong to the test set.
 
 ![Train-test split]({{ "/assets/img/underfitting-overfitting/train-test-split.png" | relative_url }})
+
+## Underfitting
+
+Let's first build a simple logistic regression model trained with out dataset (for an explanation about logistic regression, check out [this post]({{ "/posts/logistic-regression/" | relative_url }})):
+
+```py
+model = LogisticRegression()
+model.fit(X_train, y_train)
+print(model.score(X_train, y_train))
+print(model.score(X_test, y_test))
+```
+
+This model has an 87% accurancy on the training set and an 85% accuracy on the test set. That's not optimal. Let's visualize the decision boundary to get a feel of what is going on here:
+
+![Underfitting]({{ "/assets/img/underfitting-overfitting/underfitting.png" | relative_url }})
+
+Our model is too simple to achieve a good performance on this dataset. Recall that logistic regression is a linear model. It is trying to separate the two classes using a straight line, which isn't quite right. Both the train and the test errors are high.
+
+This situation is called **underfitting**. In our case, it happens because our model is too simple for the dataset. We will see later other causes that might also cause a model to underfit.
+
+## Increasing model complexity: polynomial features
+
+What can we do to make the situation better? We need to come up with a more complex model. One option would be to move away from logistic regression to a model that can learn non-linear decision boundaries, like [random forest](https://en.wikipedia.org/wiki/Random_forest) or [XGBoost](https://xgboost.readthedocs.io/en/latest/). The other option is to make a more complex logistic regression model by adding polynomial features. This will be the approach to follow here.
+
+Recall that, to make predictions, logistic regression is computing the following:
+
+$$ z = \theta_0 + \theta_1 x_1 + \theta_2 x_2 $$
+
+$$ y_{prob} = \sigma(z) $$
+
+Where $$ \theta_i $$ are the paremeters learnt by the model and $$ x_0 $$ and $$ x_1 $$ are our two input features. The output $$ y_{prob} $$ can be interpreted as a probability, thus predicting $$ y = 1 $$ if $$ y_{prob} $$ is above a certain threshold (usually 0.5). Under these circumstances, it can be shown that the decision boundary is a straight line with the following equation:
+
+$$
+\theta_0 + \theta_1 x_1 + \theta_2 x_2 = 0
+$$
+
+The problem here is that the decision boundary shouldn't be a linear function of the two features, but should also contain:
+
+- Higher-degree polynomial terms, e.g. $$ x_0^2 $$, $$ x_0^3 $$ and so on.
+- Interaction terms, like $$ x_0 x_1 $$ or $$ x_0^2 x_1^3 $$.
+
+Resulting in a model like this:
+
+$$ z = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \theta_3 x_1^2 + \theta_4 x_1 x_2 + \theta_5 x_2^2 + ... $$
+
+$$ y_{prob} = \sigma(z) $$
+
+We can make logistic regression do this by creating polynomial features. Instead of just feeding $$ x_0 $$ and $$ x_1 $$, we will create an additional feature for each polynomial term we want to include.
 
 ## Other
 
@@ -95,3 +143,7 @@ Hope you have liked the post! Feedback and suggestions are always welcome.
 * Sklearn documentation: <https://scikit-learn.org/stable/>
 * <https://machinelearningmastery.com/types-of-classification-in-machine-learning/>
 * <https://en.wikipedia.org/wiki/Supervised_learning>
+
+
+
+https://machinelearningmastery.com/polynomial-features-transforms-for-machine-learning/
