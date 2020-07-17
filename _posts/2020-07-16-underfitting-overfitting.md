@@ -81,7 +81,7 @@ print(model.score(X_train, y_train))
 print(model.score(X_test, y_test))
 ```
 
-This model has an 87% accurancy on the training set and an 85% accuracy on the test set. That's not optimal. Let's visualize the decision boundary to get a feel of what is going on here:
+This model has an 86.9% accurancy on the training set and an 85.4% accuracy on the test set. That's not optimal. Let's visualize the decision boundary to get a feel of what is going on here:
 
 ![Underfitting]({{ "/assets/img/underfitting-overfitting/underfitting.png" | relative_url }})
 
@@ -133,7 +133,7 @@ model.fit(X_train, y_train)
 
 With this code, we get `X` to have the original features, as well as several additional columns: $$ x_1^2 $$, $$ x_1^3 $$, $$ x_2^2 $$, $$ x_2^3 $$, $$ x_1 x_2 $$, $$ x_1^2 x_2 $$ and $$ x_1 x_2^2 $$. The first argument to `PolynomialFeatures` is the maximum degree of the polynomial features to create.
 
-Fitting this model yields 96% accuracy on the training set and 95% on the training set. That's much better! The decision boundary seems appropriate this time:
+Fitting this model yields 96.7% accuracy on the training set and 95.4% on the training set. That's much better! The decision boundary seems appropriate this time:
 
 ![Just right]({{ "/assets/img/underfitting-overfitting/just-right.png" | relative_url }})
 
@@ -143,7 +143,7 @@ It seems like adding polynomial features helped the model performance. What happ
 
 ![Overfitting]({{ "/assets/img/underfitting-overfitting/overfitting.png" | relative_url }})
 
-This model achieves a 99% accuracy on the training set, but drops to 93% on the test set. The model has so much flexibility that is fitting an over-complicated decision boundary that does not generalize well. It is memorizing the training set, which proves useless when facing the test set.
+This model achieves a 98.9% accuracy on the training set, but drops to 93% on the test set. The model has so much flexibility that is fitting an over-complicated decision boundary that does not generalize well. It is memorizing the training set, which proves useless when facing the test set.
 
 ## The bias-variance trade-off
 
@@ -165,8 +165,24 @@ As you saw in previous sections, changing the model complexity affects both bias
 
 In the previous section, we saw how model complexity affects bias and variance. There are other aspects that may also affect these magnitudes:
 
-- Adding more features tends to increase variance and lower bias.
-- 
+- Adding more features tends to increase variance and decrease bias.
+- Making the training set bigger usually decreases variance. It doesn't have much effect on bias.
+- [Regularization](https://towardsdatascience.com/regularization-in-machine-learning-76441ddcf99a) modifies the cost function to penalize complex models. Regularization makes variance smaller and bias higher. Sklearn's [`LogisticRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) uses regularization by default. It can be disabled by setting `penalty='none'`, and its magnitude is controlled by the `C` parameter (the smaller, the greater regularization effect).
+- Any hyperparameter controlling model complexity is likely to have an effect on both bias and variance. For example, decision trees have a hyperparameter controlling the depth of the tree. The bigger the value, the bigger the tree and the more complex the model. Increasing this value will tend to decrease bias and increase variance.
+
+## Diagnosing bias and variance problems
+
+It is easy to diagnose if your model suffers from high bias or high variance when you have only two features so you can plot them. But what happens if your dataset has more than two dimensions? Then you should look at the training set and test set errors.
+
+- If both the training set and test set errors are higher than what you would expect, it's likely that you have a bias problem.
+- If the training set error is very low but the test set error is not, then your model is failing to generalize, thus having a variance problem.
+- If both errors are similar and as low as you would expect, then congratulations! Your model is just right.
+
+The below diagram shows the three logistic regression models we've come up with in this post, together with their train and test errors:
+
+![Model comparison]({{ "/assets/img/underfitting-overfitting/model-comparison.png" | relative_url }})
+
+
 
 ## Other
 
@@ -196,3 +212,5 @@ Hope you have liked the post! Feedback and suggestions are always welcome.
 https://machinelearningmastery.com/polynomial-features-transforms-for-machine-learning/
 
 https://towardsdatascience.com/mse-and-bias-variance-decomposition-77449dd2ff55
+
+https://towardsdatascience.com/holy-grail-for-bias-variance-tradeoff-overfitting-underfitting-7fad64ab5d76
