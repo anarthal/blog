@@ -143,17 +143,34 @@ It seems like adding polynomial features helped the model performance. What happ
 
 ![Overfitting]({{ "/assets/img/underfitting-overfitting/overfitting.png" | relative_url }})
 
-This model achieves a 99% accuracy on the training set, but drops to 93% on the test set. The model has so much flexibility that is fitting an over-complicated decision boundary that does not generalize well. It is memorizing the training set, which proves useful when facing the test set.
+This model achieves a 99% accuracy on the training set, but drops to 93% on the test set. The model has so much flexibility that is fitting an over-complicated decision boundary that does not generalize well. It is memorizing the training set, which proves useless when facing the test set.
 
 ## The bias-variance trade-off
 
+Bias and variance are two properties of statistical estimators:
+
+- [Bias](https://en.wikipedia.org/wiki/Bias_of_an_estimator) estimates how far is the expected value of the estimator from the real value.
+- [Variance](https://en.wikipedia.org/wiki/Variance) measures the dispersion of the estimator around its expected value.
+
+In machine learning, we can decompose a model's error using these properties: 
+
+- Bias tells us if the model is able to approximate the real underlying problem well. Our first model had high bias, as it was too simple to represent the dataset we were trying to classify. Having a high bias is thus a synonym of **underfitting**.
+- Variance tells us how much the predictions vary across different training sets coming from the same distribution. Our third model had high variance, as it was memorizing the training set. If we had trained the model on a slightly different training set, the model would have changed significantly. A model with high variance is thus **overfitting** the training set.
+
+If you are interested in the mathematics underneath this decomposition, [this post](https://towardsdatascience.com/mse-and-bias-variance-decomposition-77449dd2ff55) provides an in-depth explanation. The derivation is usually performed using the MSE loss function, common in regression. However, the bias and variance concepts are also applicable to classification, as we have seen.
+
+As you saw in previous sections, changing the model complexity affects both bias and variance. More complex models tend to have higher variance and lower bias. On the other hand, simpler models will have lower variance but more bias. There is thus a **trade-off** between the two sources of error. To make a good model, we must balance the two terms wisely.
+
+### Factors affecting bias and variance
+
+In the previous section, we saw how model complexity affects bias and variance. There are other aspects that may also affect these magnitudes:
+
+- Adding more features tends to increase variance and lower bias.
+- 
+
 ## Other
 
-- Generalization error. No free lunch theorem?
-- Train/test split as a way to measure it (note: CV)
-- Error decomposition in bias and variance
 - Model complexity and influence in this stuff
-- Examples with bias, variance, and just right
 - How to detect if you're overfitting, underfitting, or okay without diagrams (maybe mention learning curves?)
 - Bias/variance tradeoff and other ways to influence it: number of features, number of training examples, regularization
 - Standarization
@@ -177,3 +194,5 @@ Hope you have liked the post! Feedback and suggestions are always welcome.
 
 
 https://machinelearningmastery.com/polynomial-features-transforms-for-machine-learning/
+
+https://towardsdatascience.com/mse-and-bias-variance-decomposition-77449dd2ff55
