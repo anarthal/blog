@@ -116,7 +116,36 @@ $$ z = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \theta_3 x_1^2 + \theta_4 x_1 x_
 
 $$ y_{prob} = \sigma(z) $$
 
-We can make logistic regression do this by creating polynomial features. Instead of just feeding $$ x_0 $$ and $$ x_1 $$, we will create an additional feature for each polynomial term we want to include.
+We can make logistic regression do this by manually creating polynomial features. We will create additional columns in the `X_train` and `X_test` matrices, containing the values of $$ x_1^2 $$, $$ x_2^2 $$, $$ x_0 x_1 $$ and so on until a certain degree. We will feed these features to the model as if they were additional variables.
+
+Sklearn has a built-in [polynomial feature creator](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html):
+
+```py
+from sklearn.preprocessing import PolynomialFeatures
+
+df, y = ... # df contains the features, y contains the ground-true labels
+X = PolynomialFeatures(3).fit_transform(df)
+X_train, X_test, y_train, y_test = train_test_split(df, y, 
+	test_size=0.25, random_state=0)
+model = LogisticRegression()
+model.fit(X_train, y_train)
+```
+
+With this code, we get `X` to have the original features, as well as several additional columns: $$ x_1^2 $$, $$ x_1^3 $$, $$ x_2^2 $$, $$ x_2^3 $$, $$ x_1 x_2 $$, $$ x_1^2 x_2 $$ and $$ x_1 x_2^2 $$. The first argument to `PolynomialFeatures` is the maximum degree of the polynomial features to create.
+
+Fitting this model yields 96% accuracy on the training set and 95% on the training set. That's much better! The decision boundary seems appropriate this time:
+
+![Just right]({{ "/assets/img/underfitting-overfitting/just-right.png" | relative_url }})
+
+## Overfitting
+
+It seems like adding polynomial features helped the model performance. What happens if we use a very large degree polynomial? We will end up having an **overfitting** problem. Let's see what happens when using a 15 degree polynomial (I've also turned regularization off, which increases the overfitting effect - we will talk about this later):
+
+![Overfitting]({{ "/assets/img/underfitting-overfitting/overfitting.png" | relative_url }})
+
+This model achieves a 99% accuracy on the training set, but drops to 93% on the test set. The model has so much flexibility that is fitting an over-complicated decision boundary that does not generalize well. It is memorizing the training set, which proves useful when facing the test set.
+
+## The bias-variance trade-off
 
 ## Other
 
@@ -128,6 +157,7 @@ We can make logistic regression do this by creating polynomial features. Instead
 - How to detect if you're overfitting, underfitting, or okay without diagrams (maybe mention learning curves?)
 - Bias/variance tradeoff and other ways to influence it: number of features, number of training examples, regularization
 - Standarization
+- CV
 
 ## Conclusion
 
