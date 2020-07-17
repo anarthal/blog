@@ -131,7 +131,7 @@ model = LogisticRegression()
 model.fit(X_train, y_train)
 ```
 
-With this code, we get `X` to have the original features, as well as several additional columns: $$ x_1^2 $$, $$ x_1^3 $$, $$ x_2^2 $$, $$ x_2^3 $$, $$ x_1 x_2 $$, $$ x_1^2 x_2 $$ and $$ x_1 x_2^2 $$. The first argument to `PolynomialFeatures` is the maximum degree of the polynomial features to create.
+With this code, we get `X` to have the original features, as well as several additional columns: $$ x_1^2 $$, $$ x_1^3 $$, $$ x_2^2 $$, $$ x_2^3 $$, $$ x_1 x_2 $$, $$ x_1^2 x_2 $$ and $$ x_1 x_2^2 $$. The first argument to `PolynomialFeatures` is the maximum degree of the polynomial features to create. It is important that $$ x_1 $$ and $$ x_2 $$ have a similar range of values. Otherwise, polynomial terms may end up being extremely high or low. Having our data standarded solves this problem. 
 
 Fitting this model yields 96.7% accuracy on the training set and 95.4% on the training set. That's much better! The decision boundary seems appropriate this time:
 
@@ -182,35 +182,27 @@ The below diagram shows the three logistic regression models we've come up with 
 
 ![Model comparison]({{ "/assets/img/underfitting-overfitting/model-comparison.png" | relative_url }})
 
+## Conclusion and further reading
 
+Underfitting and overfitting, together with bias and variance, are one of the most important concepts in machine learning. Knowing how they influence your model will allow you to make much better decisions in order to improve it. I hope this post helped you understand these concepts better. You can also check [this kernel](https://www.kaggle.com/anarthal/underfitting-overfitting-and-model-complexity) if you're interested in the programming details.
 
-## Other
+Some further thoughts:
 
-- Model complexity and influence in this stuff
-- How to detect if you're overfitting, underfitting, or okay without diagrams (maybe mention learning curves?)
-- Bias/variance tradeoff and other ways to influence it: number of features, number of training examples, regularization
-- Standarization
-- CV
-
-## Conclusion
+- You may have seen people splitting datasets into three: a training set, a cross validation or dev set and a test set. Cross-validation is a technique for estimating model performance and tuning hyperparameters. You can read more about it [here](https://scikit-learn.org/stable/modules/cross_validation.html).
+- We briefly talked about feature scaling and standardization. [This post](https://towardsdatascience.com/scale-standardize-or-normalize-with-scikit-learn-6ccc7d176a02) may provide further insights about these preprocessing techniques.
+- Plotting learning curves is a technique to further diagnose if your model suffers from high bias or high variance. You can read [this](https://machinelearningmastery.com/learning-curves-for-diagnosing-machine-learning-model-performance/) for further info.
 
 Hope you have liked the post! Feedback and suggestions are always welcome.
 
-
 ## References
 
-* Kaggle dataset on board game data: <https://www.kaggle.com/mrpantherson/board-game-data>.
-* Insights - Geek Board Game (Kaggle kernel): <https://www.kaggle.com/devisangeetha/insights-geek-board-game>.
-* Board Game Geek: <https://boardgamegeek.com/>.
 * Machine Learning, Coursera course by Andrew Ng: <https://www.coursera.org/learn/machine-learning/>.
+* 4 Types of Classification Tasks in Machine Learning, by Jason Brownlee: <https://machinelearningmastery.com/types-of-classification-in-machine-learning/>
+* How to Use Polynomial Feature Transforms for Machine Learning, by Jason Brownlee: <https://machinelearningmastery.com/polynomial-features-transforms-for-machine-learning/>
+* MSE and Bias-Variance decomposition, by Maksym Zavershynskyi: https://towardsdatascience.com/mse-and-bias-variance-decomposition-77449dd2ff55
+* Holy Grail for Bias-Variance tradeoff, Overfitting & Underfitting, by Juhi Ramzai:
+<https://towardsdatascience.com/holy-grail-for-bias-variance-tradeoff-overfitting-underfitting-7fad64ab5d76>
+* Scale, Standardize, or Normalize with Scikit-Learn, by Jeff Hale: <https://towardsdatascience.com/scale-standardize-or-normalize-with-scikit-learn-6ccc7d176a02>
+* How to use Learning Curves to Diagnose Machine Learning Model Performance, by Jason Brownlee: <https://machinelearningmastery.com/learning-curves-for-diagnosing-machine-learning-model-performance/>
 * Sklearn documentation: <https://scikit-learn.org/stable/>
-* <https://machinelearningmastery.com/types-of-classification-in-machine-learning/>
-* <https://en.wikipedia.org/wiki/Supervised_learning>
-
-
-
-https://machinelearningmastery.com/polynomial-features-transforms-for-machine-learning/
-
-https://towardsdatascience.com/mse-and-bias-variance-decomposition-77449dd2ff55
-
-https://towardsdatascience.com/holy-grail-for-bias-variance-tradeoff-overfitting-underfitting-7fad64ab5d76
+* XGBoost documentation: <https://xgboost.readthedocs.io/en/latest/>
