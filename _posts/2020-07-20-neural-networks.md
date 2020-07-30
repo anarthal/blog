@@ -84,8 +84,36 @@ Wow, that seems intimidating. Don't get fooled by this apparently complex expres
 
 Both $$ w_{ij}^{[l]} $$ and $$ b_{j}^{[l]} $$ are the *learnable paremeters* of the neural network: they can be trained by minimizing a cost function, as in logistic regression.
 
+### Matrix notation
 
-### A vectorized implementation
+Do you like subscript notation? Neither I do. It turns out that all the computations in a neural network can be expressed as matrix operations. This simplifies notation a lot and makes implementations much faster, as computers prefer matrix operations to loops.
+
+We can stack the $$ z $$ values and the activations in a single column vector per layer. If we do this, we get:
+
+$$ 
+\boldsymbol z^{[l]} = \begin{bmatrix} z_1^{[l]} \\ z_2^{[l]} \\ ... \\ z_{n_l}^{[l]} \end{bmatrix} 
+\text{            }
+\boldsymbol a^{[l]} = \begin{bmatrix} a_1^{[l]} \\ a_2^{[l]} \\ ... \\ a_{n_l}^{[l]} \end{bmatrix}
+$$
+
+$$ n_l $$ represents the number of hidden units in layer $$ l $$. In the network above, $$ n_1 = 4 $$, $$ n_2 = 2 $$ and $$ n_3 = 1 $$. The vectors $$ \boldsymbol z^{[l]} $$ and $$ \boldsymbol a^{[l]} $$ have dimensions $$ (n_l, 1) $$.
+
+We can also stack the biases into a vector and the weights into a matrix, defining:
+
+$$ 
+\boldsymbol b^{[l]} = \begin{bmatrix} b_1^{[l]} \\ b_2^{[l]} \\ ... \\ b_{n_l}^{[l]} \end{bmatrix} 
+\text{            }
+\boldsymbol W^{[l]} = \begin{bmatrix}
+	w_{11}^{[l]} & w_{12}^{[l]} & ... & w_{1n_{l-1}}^{[l]} \\ 
+	w_{21}^{[l]} & w_{22}^{[l]} & ... & w_{2n_{l-1}}^{[l]} \\ 
+	... & ... & ... & ... \\
+	w_{n_l1}^{[l]} & w_{n_l2}^{[l]} & ... & w_{n_ln_{l-1}}^{[l]}
+\end{bmatrix}
+$$
+
+Where $$ \boldsymbol b^{[l]} $$ has dimensions $$ (n_l, 1) $$, and $$ \boldsymbol W^{[l]} $$ is $$ (n_l, n_{l-1}) $$.
+
+
 
 
 - Matrix formulation
