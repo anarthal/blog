@@ -36,36 +36,64 @@ Let's say we are trying to solve a binary classification problem using logistic 
   
 $$ z = w_1 x_1 + w_2 x_2 + ... + w_n x_n + b $$
 
-$$ y_{prob} = \sigma(z) $$
+$$ y_{prob} = a = \sigma(z) $$
   
-Where $$ w_i $$ are the *weights* of the logistic regression model and $$ b $$ is the *bias term* (if you read [this]({{ "/posts/logistic-regression/" | relative_url }})), I called them $$ \theta_i $$ and $$ \theta_0 $$, respectively). These are the parameters the model would learn by minimizing the cost function.
+Where $$ w_i $$ are the *weights* of the logistic regression model and $$ b $$ is the *bias term* (if you read [this]({{ "/posts/logistic-regression/" | relative_url }}), I called them $$ \theta_i $$ and $$ \theta_0 $$, respectively). These are the parameters the model would learn by minimizing the cost function.
 
 The sigmoid function makes the output to have a non-linear relationship with the input. In the neural network context, these non-linear functions are called *activation functions*.
 
-We can represent this logistic regression _unit_ as a computation graph like the following:
+This simple logistic regression model can be thought of as a computation graph:
 
-## Anatomy of a neural network
+![Logistic unit]({{ "/assets/img/neural-networks/logistic-unit.jpg" | relative_url }})
 
-A neural network is composed of *units*. Each unit is a block taking a set of inputs and calculating a single output (like functions do). Units are stacked in *layers*. The following picture represents 
+What does this have to do with neural networks? ANNs are composed of several *units* like the one shown above. A neural network may have thousands of these components connected together, which allows them to learn very complex non-linear functions. 
 
-A neural network is composed of several *layers*. Each layer is composed of *units*. 
+## Anatomy of a neural network: layers
 
- There are three types of layers:
-
-- *Input layer*. 
+The idea of a neural network is to connect several units like the one above together, such that the output of one unit is wired to the input of another. Units are grouped in *layers*, forming a structure like the following:
 
 ![Layers]({{ "/assets/img/neural-networks/layers.png" | relative_url }})
-Click the hook will locate the footnote [^footnote].
+
+Don't get intimidated by the notation in this diagram! We will go through it in a minute.
+
+As shown above, there are three types of layers:
+
+- The *input layer* is always the first one, shown in blue. It does no computation: it is just a way to represent the input of our network (the features $$ x_i $$).
+- The *hidden layers*, shown in green, perform the computation explained before: a linear function followed by a non-linear activation function. The first hidden layer gets the features as input. Deeper layers get the output of previous layer's units as inputs. These output values are called *activations*.
+- The *output layer* is the last one, and also performs a similar computation as hidden units. For binary classification, the output layer has a single unit, and its activation is the prediction of the network.
+
+As the input layer does not perform any computation, we don't count it as an actual layer. Thus, the above network has 3 layers. In general, a network may have $$ L $$ layers ( $$ L = 3 $$ in this case).
+
+Note that each unit is connected to every single unit in the previous layer. This is why this network architecture is sometime called _fully connected_.
+
+## Computing activations
+
+We will denote by $$ a_i^{[l]} $$ the output (activation) of the $$ i $$th unit in layer number $$ l $$. For example, $$ a_3^{[1]} $$ is the output of the 3rd unit of the first layer. Look at the figure in the previous section to double-check that you understand this notation. The text inside each unit repesents its output.
+
+How can we compute each activation? We will follow the same procedure as for logistic regression. For the sake of example, let's compute $$ a_1^{[2]} $$, the activation of the first unit in the second layer:
+
+$$ z_1^{[2]} = w_{21}^{[2]} a_1^{[1]} + w_{22}^{[2]} a_2^{[1]} + w_{23}^{[2]} a_3^{[1]} + w_{24}^{[2]} a_4^{[1]} + b_1^{[2]} $$
+
+$$ a_1^{[2]} = g^{[2]}(z_1^{[2]}) = \sigma(z_1^{[2]}) $$
+
+Wow, that seems intimidating. Don't get fooled by this apparently complex expression: it is just computing the same expression as logistic regression! The only difference is that every single unit has different parameters: different values for the weights $$ w $$ and the bias term $$ b $$. We are using the following notation:
+
+- $$ w_{ij}^{[l]} $$ is the weight that unit $$ j $$ in layer $$ l $$ gives to the activation coming from the $$ i $$th unit in the previous layer. In the diagram shown above, each arrow represents one of these weights. For example, the arrow going from $$ a_2^{[1]} $$ to $$ a_3^{[2]} $$ represents $$ w_{23}^{[2]} $$.
+- $$ b_{j}^{[l]} $$ is the bias term for unit $$ j $$ in layer $$ l $$. They play the same role as $$ b $$ in logistic regression. They are not represented in the figure.
+- $$ g^{[l]} $$ is the activation function for layer $$ l $$. For now, this is equivalent to the sigmoid function. We will see later that we can use other activation functions that work better than sigmoid for neural networks.
+
+Both $$ w_{ij}^{[l]} $$ and $$ b_{j}^{[l]} $$ are the *learnable paremeters* of the neural network: they can be trained by minimizing a cost function, as in logistic regression.
 
 
-- Logistic regression refresher
-- MNIST digit recognition: problem statement
-- Hidden units as logistic units
-- Activation functions
+### A vectorized implementation
+
+
 - Matrix formulation
-- Generalization for multiple layers
+- Activation functions
+- Generalization for multiple outputs
 - Forward prop and backprop
 - Notes on optimization: gradient descent and similar, mini batches, learning rate
+- MNIST digit recognition: problem statement
 - Intro to keras and the sequential API
 
 
