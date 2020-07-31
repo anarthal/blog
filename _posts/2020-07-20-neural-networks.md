@@ -9,7 +9,7 @@ math: true
 
 They are on everyone's lips: every single post today seems to talk about deep neural networks and the bewildering variety of applications they are used for. [Speech recognition](https://en.wikipedia.org/wiki/Speech_recognition), [computer vision](https://en.wikipedia.org/wiki/Computer_vision), [natural language processing](https://en.wikipedia.org/wiki/Natural_language_processing)... the possibilities seem endless. Neural networks are the workhorse of [deep learning](https://en.wikipedia.org/wiki/Deep_learning), which is a subset of machine learning. But what is a neural network? How does it work?
 
-This post is intended as a crash course on neural networks and the math behind them. We will also go through a computer vision example: we will train a network that recognizes handwritten digits with 95% accuracy! We will use the popular [Keras](https://keras.io/) Python framework to build our networks.
+This post is intended as a crash course on neural networks and the math behind them. Most of the ideas in this post come from (TODO: insert link) Andrew Ng's Deep Learning specialization on Coursera. We will also go through a computer vision example: we will train a network that recognizes handwritten digits with 95% accuracy! We will use the popular [Keras](https://keras.io/) Python framework to build our networks.
 
 To understand this post you should have basic notions of machine learning, linear algebra and calculus. In particular, you should already know what a classification problem is and how a logistic regression model can help. If you are not familiar with these concepts, [this blog post]({{ "/posts/logistic-regression/" | relative_url }}) may help. You should also know how to multiply matrices and what a derivative is.
 
@@ -23,7 +23,15 @@ What is the difference between traditional models and neural networks then? The 
 
 There are many types of neural networks depending on the field of application. [Convolutional neural networks](https://en.wikipedia.org/wiki/Convolutional_neural_network) and [recurrent neural networks](https://en.wikipedia.org/wiki/Recurrent_neural_network) are used in computer vision and natural language processing, respectively. In this post we will focus on [artificial neural networks](https://en.wikipedia.org/wiki/Artificial_neural_network), often called _fully connected_ networks or just _neural networks_, for short. These are the basic building block of deep learning on which the others are based. It is important to understand these well before jumping into the others.
 
-Most of the ideas presented here come from (TODO: insert link) Andrew Ng's Deep Learning specialization on Coursera.
+## When to use a neural network
+
+Before anyone gets too excited, a word of warning: as with every tool, it is adequate for some scenarios and it is not for other ones. If you try to apply neural networks to every single problem, you will get bad results in many of them.
+
+Neural networks are complex models, and thus are adequate for complex problems (reading [my post on model complexity]({{ "/posts/underfitting-overfitting/" | relative_url }}) may help understand). Applications like speech recognition, computer vision or natural language processing are usually the niche use for neural networks. If you have a simple classification problem with a couple plain numeric variables, chances are that [XGBoost](https://xgboost.readthedocs.io/en/latest/) or [random forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) will work better.
+
+As with any complex model, it is prone to overfitting if you do not feed it with enough data. If you have very little data to solve your problem, neural networks aren't likely to be very effective.
+
+If you are interested, [this post](https://medium.com/datadriveninvestor/when-not-to-use-neural-networks-89fb50622429) explores this topic in depth.
 
 ## Logistic regression as a mini neural network
 
@@ -113,13 +121,66 @@ $$
 
 Where $$ \boldsymbol b^{[l]} $$ has dimensions $$ (n_l, 1) $$, and $$ \boldsymbol W^{[l]} $$ is $$ (n_l, n_{l-1}) $$.
 
+With this notation, all the subscripts in the previous equations go away:
+
+$$ \boldsymbol z^{[2]} = \boldsymbol W^{[2]} \boldsymbol a^{[1]} + \boldsymbol b^{[2]} $$
+
+$$ \boldsymbol a^{[2]} = g^{[2]}(\boldsymbol z^{[2]}) $$
+
+Where $$ g^{[2]} $$ is the activation function for layer 2 (i.e. the sigmoid function), applied to each element of $$ z^{[2]} $$. So, instead of computing the activations unit by unit, we are now able to calculate the whole layer's activations at the same time. Nice work!
+
+## Making predictions
+
+We now have all in place to compute a prediction $$ y_{prob} $$ given the input features $$ x_1, x_2, ..., x_n $$. As with activations, let's stack the input features into a column vector with dimensions $$ (n, 1) $$:
+
+$$ \boldsymbol x = \boldsymbol a^{[0]} =  \begin{bmatrix} x_0 \\ x_1 \\ ... \\ x_n \end{bmatrix} $$
+
+We feed this vector $$ \boldsymbol x $$ to the first hidden layer (that's why we can also call it $$ \boldsymbol a^{[0]} $$). Supposing we have the network in the example, we would do:
+
+$$ \boldsymbol z^{[1]} = \boldsymbol W^{[1]} \boldsymbol a^{[0]} + \boldsymbol b^{[1]} = 
+                         \boldsymbol W^{[1]} \boldsymbol x + \boldsymbol b^{[1]} $$
+
+$$ \boldsymbol a^{[1]} = g^{[1]}(\boldsymbol z^{[1]}) $$
+
+$$ \boldsymbol z^{[2]} = \boldsymbol W^{[2]} \boldsymbol a^{[1]} + \boldsymbol b^{[2]} $$
+
+$$ \boldsymbol a^{[2]} = g^{[2]}(\boldsymbol z^{[2]}) $$
+
+$$ \boldsymbol z^{[3]} = \boldsymbol W^{[3]} \boldsymbol a^{[2]} + \boldsymbol b^{[3]} $$
+
+$$ \boldsymbol a^{[3]} = y_{prob} = g^{[3]}(\boldsymbol z^{[3]}) $$
+
+Note that $$ \boldsymbol a^{[3]} $$ is really a real number instead of a vector, because we have just one hidden unit in the output layer. Also note that $$ a^{[3]} = y_{prob} \in [0, 1] $$, as $$ g^{[3]} $$ is the sigmoid function.
+
+That's it! Congratulations, you now know how neural networks make predictions!
+
+## Training the network
+
+How do we learn the parameters $$ \boldsymbol W^{[l]} $$ and $$ \boldsymbol b^{[l]} $$? Well, using the same technique as in training a logistic regression model: optimizing a cost function. If we are facing a binary classification problem, we can define the usual log loss function (if you are not familiar with it, check [this]({{ "/posts/logistic-regression/#training-the-model" | relative_url }}). For a single training example $$ i $$:
+
+$$ L(y^{(i)}, y_{prob}^{(i)}) = - y^{(i)}log(y_{prob}^{(i)}) - (1 - y^{(i)})log(1 - y_{prob}^{(i)}) $$
+
+The total cost will be the sum over all training examples:
+
+$$ J(all network parameters) = \frac{1}{m} \sum_{i=1}^{m} L(y^{(i)}, y_{prob}^{(i)}) $$
+
+Where the cost $$ J $$ depends on all weight matrices and bias vectors. It is thus a function of _a lot_ of variables! Training the network is just an optimization problem: we have to figure out which are the values for the weights and biases that make $$ J $$ as small as possible.
+
+There are a lot of _optimization methods_ to solve this optimization problem: [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent) is the most basic one, while methods like the [ADAM optimization algorithm](https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/) refine the former to be more efficient. Keras allows you to select which method to use and lets customize some of their parameters.
+
+Keras will take care of the optimization process for us. This is fortunate, as the minimization problem is not straightforward - we would need to compute the _derivatives_ of the function $$ J $$ with respect to _every single_ parameter in our network! This process is called _back propagation_, and is completely automatic in Keras. Explaining it in depth is beyond the scope of this post.
+
+## Activation functions
+
+What is the role of activation functions? And why have I been writing $$ g^{[l]} $$ instead of just $$ \sigma $$? Let's find out.
+
+Have you ever done manual feature engineering? If you have tried Kaggle's [Titanic dataset](https://www.kaggle.com/c/titanic) you may have found yourself creating features like "_Was this passenger a child?_", "_Was this woman married?_", given input features like _age_ or _name_. The idea of neural networks is to let the model learn this feature engineering problem: the first layer learns to identify some low-level features, which are used by the next layer, and so on, until a prediction is output by the last layer.
+
+Mathematically, the requirement 
 
 
-
-- Matrix formulation
 - Activation functions
 - Generalization for multiple outputs
-- Forward prop and backprop
 - Notes on optimization: gradient descent and similar, mini batches, learning rate
 - MNIST digit recognition: problem statement
 - Intro to keras and the sequential API
@@ -148,3 +209,6 @@ Hope you have liked the post! Feedback and suggestions are always welcome.
 * Sklearn documentation: <https://scikit-learn.org/stable/>
 * <https://machinelearningmastery.com/types-of-classification-in-machine-learning/>
 * <https://en.wikipedia.org/wiki/Supervised_learning>
+
+https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/
+https://medium.com/datadriveninvestor/when-not-to-use-neural-networks-89fb50622429
