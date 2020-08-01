@@ -162,7 +162,7 @@ $$ L(y^{(i)}, y_{prob}^{(i)}) = - y^{(i)}log(y_{prob}^{(i)}) - (1 - y^{(i)})log(
 
 The total cost will be the sum over all training examples:
 
-$$ J(all network parameters) = \frac{1}{m} \sum_{i=1}^{m} L(y^{(i)}, y_{prob}^{(i)}) $$
+$$ J(\text{all network parameters}) = \frac{1}{m} \sum_{i=1}^{m} L(y^{(i)}, y_{prob}^{(i)}) $$
 
 Where the cost $$ J $$ depends on all weight matrices and bias vectors. It is thus a function of _a lot_ of variables! Training the network is just an optimization problem: we have to figure out which are the values for the weights and biases that make $$ J $$ as small as possible.
 
@@ -176,10 +176,86 @@ What is the role of activation functions? And why have I been writing $$ g^{[l]}
 
 Have you ever done manual feature engineering? If you have tried Kaggle's [Titanic dataset](https://www.kaggle.com/c/titanic) you may have found yourself creating features like "_Was this passenger a child?_", "_Was this woman married?_", given input features like _age_ or _name_. The idea of neural networks is to let the model learn this feature engineering problem: the first layer learns to identify some low-level features, which are used by the next layer, and so on, until a prediction is output by the last layer.
 
-Mathematically, the requirement 
+The role of activation functions is to add non-linearity to the neural network. They ensure that each unit is computing a non-linear function of the inputs. This is allows units in shallower layers to learn different features that can be used later. 
+
+What would happen if we did not use any activation function? Well, every single unit would end up computing a linear combination of its inputs. The final output would end up being a linear combination of the input features, no better than linear/logistic regression! Even with all those weights and bias terms! That would defy the original purpose of a neural network: being able to learn complex non-linear functions.
+
+Thus, *the activation function must be non-linear*. The sigmoid function is non-linear, so it can be used as an activation function. But there are other options. Let me present you the Rectified Linear Unit (ReLU) function:
+
+$$ relu(z) = max{0, z} $$
+
+It may be easier if we plot it:
+
+![ReLU]({{ "/assets/img/neural-networks/relu.png" | relative_url }})
+
+- If $$ z <= 0 $$, the output is zero.
+- If $$ z > 0 $$, the output is the same as the input.
+
+What is the advantage of ReLU versus sigmoid? ReLU has better mathematical properties that make the training process much faster. Concretely, it helps by solving the [vanishing gradient problem](https://en.wikipedia.org/wiki/Vanishing_gradient_problem). If you are interested in this topic, [this post](https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks/) explores it further.
+
+Note that ReLU is not bounded: if $$ z $$ becomes arbitrarily large, the output will be as big as the input. If we are dealing with binary classification, this makes it inadequate for our output layer, as the output unit should produce a number $$ y_{prob} \in [0, 1] $$ that can be interpreted as a probability.
+
+How do we solve this? We will make each layer have its own activation function:
+
+- Hidden layers (layers 1 and 2, in our example) will use relu: $$ g^{[1]}(z) = g^{[2]}(z) = relu(z) $$.
+- The output layer will keep using the sigmoid function: $$ g^{[3]}(z) = \sigma(z) $$.
+
+## Multiclass classification
+
+The approach presented above works as long as we deal with binary classification. What if the output label could have more than two values? Imagine that you are building an application that classifies fruit images, distinguishing apples, oranges and pears. Your output label could then take three possible values. This would be a [multiclass classification](https://en.wikipedia.org/wiki/Multiclass_classification) problem.
+
+### One-hot encoding
+
+First of all, we can no longer represent our labels as a single number $$ y \in {0, 1} $$. We could represent our training example labels as a number $$ y \in {0, 1, 2} $$, with $$ y = 0 $$ representing an apple, $$ y = 1 $$ being an orange, and $$ y = 2 $$, a pear. However, this method doesn't work well in neural networks. Instead, we will use a [one-hot representation](https://en.wikipedia.org/wiki/One-hot). We will assign a label $$ y \in \mathbb{R}^3 $$ to each example in the training set, with the following criteria:
+
+$$ \text{Apple } \Rightarrow y = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} $$
+
+$$ \text{Orange} \Rightarrow y = \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} $$
+
+$$ \text{Pear  } \Rightarrow y = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} $$
+
+### The output layer
+
+Next, we will modify the shape of our output layer. Instead of outputing a single number $$ y_{prob} \in \mathbb{R} $$, it will produce a vector with three elements, one for each class: $$ y_{prob} \in \mathbb{R}^3 $$. Each of these numbers will be between zero and one, and can be interpreted as the probability of the example to belong to each class. For example, let's say our network outputs the following prediction:
+
+$$ y_{prob} = \begin{bmatrix} 0.7 \\ 0.2 \\ 0.1 \end{bmatrix} $$
+
+This means that our networks thinks there is a 70% chance that the input picture is an apple, a 20% chance it's an orange, and a 10% chance of being a pear. The final prediction would be _apple_.
+
+With these changes, our network becomes:
+
+![Layers multiclass]({{ "/assets/img/neural-networks/layers-multi-class.png" | relative_url }})
+
+### The loss function
+
+What about the loss function? We can no longer use the original formulation, as it is specific to binary classification. It turns out that the log loss can be generalized easily to more than two classes. For our example (subscripts indicate indexing into the vector):
+
+$$ L(y^{(i)}, y_{prob}^{(i)}) = - y_1^{(i)}log(y_{prob1}^{(i)}) - y_2^{(i)}log(y_{prob2}^{(i)}) - y_3^{(i)}log(y_{prob3}^{(i)}) $$
+
+Let's see it with an example where the network output a correct prediction:
+
+$$ \text{The example was an apple} \Rightarrow y^{(i)} = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} $$
+
+$$ \text{Our network predicted   } y_{prob}^{(i)} = \begin{bmatrix} 0.7 \\ 0.2 \\ 0.1 \end{bmatrix} $$
+
+$$ L(y^{(i)}, y_{prob}^{(i)}) = - 1 * log(0.7) - 0 * log(0.2) - 0 * log(0.1) = 0.3567 $$
+
+Let's see what would happen if our network had predicted the wrong class (i.e. it was an apple but the network predicted a pear):
+
+$$ \text{The example was an apple} \Rightarrow y^{(i)} = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} $$
+
+$$ \text{Our network predicted   } y_{prob}^{(i)} = \begin{bmatrix} 0.1 \\ 0.2 \\ 0.7 \end{bmatrix} $$
+
+$$ L(y^{(i)}, y_{prob}^{(i)}) = - 1 * log(0.1) - 0 * log(0.2) - 0 * log(0.7) = 2.3026 $$
+
+That seems right: the penalty is big for making wrong predictions.
+
+Note that the log loss function is also called the *cross entropy* loss. [This post](https://towardsdatascience.com/cross-entropy-for-classification-d98e7f974451) may give you further insights on this topic.
+
+### The activation function
 
 
-- Activation functions
+
 - Generalization for multiple outputs
 - Notes on optimization: gradient descent and similar, mini batches, learning rate
 - MNIST digit recognition: problem statement
@@ -212,3 +288,5 @@ Hope you have liked the post! Feedback and suggestions are always welcome.
 
 https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/
 https://medium.com/datadriveninvestor/when-not-to-use-neural-networks-89fb50622429
+https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks/
+https://towardsdatascience.com/cross-entropy-for-classification-d98e7f974451
