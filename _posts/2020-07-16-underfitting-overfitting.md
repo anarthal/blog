@@ -5,6 +5,8 @@ date: 2020-07-16
 categories: [Data Science, Machine Learning]
 tags: [machinelearning, classification, supervised, sklearn, python]
 math: true
+description: A post explaining underfitting, overfitting, the bias-variance trade-off and how model complexity affects these phenomena using an example.
+ogimage: underfitting-overfitting/underfitting.png
 ---
 
 In this post I will talk about the underfitting and overfitting phenomena, and how model complexity affects them. I will also explain the bias-variance trade-off.

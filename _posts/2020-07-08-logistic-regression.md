@@ -5,6 +5,8 @@ date: 2020-07-08
 categories: [Data Science, Machine Learning]
 tags: [machinelearning, classification, supervised, sklearn, python]
 math: true
+description: An explanation of the math behind logistic regression with an example using a real-world dataset.
+ogimage: logistic-regression/decision-boundary.png
 ---
 
 In this post I will talk about one of the most basic models in Machine Learning: logistic regression. This post doesn't assume any previous knowledge of logistic regression. Some prior knowledge on machine learning may be beneficial.

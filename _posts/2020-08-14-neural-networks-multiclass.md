@@ -1,3 +1,14 @@
+---
+title: Deep dive into neural networks - multiclass classification
+author: anarthal
+date: 2020-08-14
+categories: [Data Science, Machine Learning, Deep Learning]
+tags: [machinelearning, deeplearning, classification]
+math: true
+description: TODO
+ogimage: neural-networks/layers.png
+---
+
 ## Multiclass classification
 
 The approach presented above works as long as we deal with binary classification. What if the output label could have more than two values? Imagine that you are building an application that classifies fruit images, distinguishing apples, oranges and pears. Your output label could then take three possible values. This would be a [multiclass classification](https://en.wikipedia.org/wiki/Multiclass_classification) problem.

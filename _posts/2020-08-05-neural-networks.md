@@ -1,10 +1,12 @@
 ---
-title: Deep dive into neural networks: the basics
+title: Deep dive into neural networks - the basics
 author: anarthal
 date: 2020-08-05
 categories: [Data Science, Machine Learning, Deep Learning]
 tags: [machinelearning, deeplearning, classification]
 math: true
+description: This post covers what are neural networks and how they make predictions for binary classification problems.
+ogimage: neural-networks/layers.png
 ---
 
 They are on everyone's lips: every single post today seems to talk about deep neural networks and the bewildering variety of applications they are used for. [Speech recognition](https://en.wikipedia.org/wiki/Speech_recognition), [computer vision](https://en.wikipedia.org/wiki/Computer_vision), [natural language processing](https://en.wikipedia.org/wiki/Natural_language_processing)... the possibilities seem endless. Neural networks are the workhorse of [deep learning](https://en.wikipedia.org/wiki/Deep_learning), a subset of machine learning. But what is a neural network? How does it work?
