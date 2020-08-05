@@ -1,7 +1,7 @@
 ---
 title: Deep dive into neural networks
 author: anarthal
-date: 2020-07-30
+date: 2020-08-06
 categories: [Data Science, Machine Learning, Deep Learning]
 tags: [machinelearning, deeplearning, classification, keras, python]
 math: true
@@ -220,7 +220,7 @@ Next, we will modify the shape of our output layer. Instead of outputing a singl
 
 $$ y_{prob} = \begin{bmatrix} 0.7 \\ 0.2 \\ 0.1 \end{bmatrix} $$
 
-This means that our networks thinks there is a 70% chance that the input picture is an apple, a 20% chance it's an orange, and a 10% chance of being a pear. The final prediction would be _apple_.
+This means that our networks thinks there is a 70% chance that the input picture is an apple, a 20% chance it's an orange, and a 10% chance of being a pear. The final prediction would be _apple_. Note that all the probabilities in the output vector sum 1.
 
 With these changes, our network becomes:
 
@@ -254,7 +254,17 @@ Note that the log loss function is also called the *cross entropy* loss. [This p
 
 ### The activation function
 
+We could use the sigmoid function as the activation function for output layer, applying it independently to each unit. However, if we did this, we would have no guarantee that the output probabilities sum one, thus breaking our interpretation. Note that this is required because the output labels are mutually exclusive: one picture can't be an orange and a pear at the same time.
 
+Instead, we will use the [softmax](https://en.wikipedia.org/wiki/Softmax_function) activation function for the output layer. Given a vector $$ \boldsymbol z \in \mathbb{R}^K $$, the softmax function 
+
+
+The output layer will perform the following computation, in our case:
+
+$$ \boldsymbol z^{[3]} = \boldsymbol W^{[3]} \boldsymbol a^{[2]} + \boldsymbol b^{[3]} $$
+
+$$ \boldsymbol a^{[3]} = y_{prob} = softmax(\boldsymbol z^{[3]}) = 
+   \begin{bmatrix} \frac{e^{z_1^{[3]}}}{e^{z_1^{[3]}} + e^{z_2^{[3]}} + e^{z_3^{[3]}}} \end{bmatrix} $$
 
 - Generalization for multiple outputs
 - Notes on optimization: gradient descent and similar, mini batches, learning rate
