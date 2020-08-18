@@ -1,15 +1,38 @@
 ---
 title: Deep dive into neural networks - multiclass classification
 author: anarthal
-date: 2020-08-14
+date: 2020-08-18
 categories: [Data Science, Machine Learning, Deep Learning]
 tags: [machinelearning, deeplearning, classification]
 math: true
-description: TODO
+description: How to perform multiclass classification using neural networks.
 ogimage: neural-networks/layers.png
 ---
 
-## Multiclass classification
+Some machine learning problems involve classifying an object into one of N classes. These are called [multiclass classification](https://en.wikipedia.org/wiki/Multiclass_classification) problems, as opposed to [binary classification](https://en.wikipedia.org/wiki/Binary_classification), where there is just a positive and a negative class. Handwritten digit recognition and image classification are two well-known instances of multiclass classification problems.
+
+![Multiclass]({{ "/assets/img/neural-networks-multiclass/multiclass.jpeg" | relative_url }})
+
+Image source: <https://towardsdatascience.com/multi-class-classification-one-vs-all-one-vs-one-94daed32a87b>
+
+In this post we will explain how a neural network can be used to solve this problem. This is the second of a series of posts on neural networks I've been writing. If you are new to neural networks, you may want to have a look into [the first one]({{ "/posts/neural-networks/" | relative_url }}) before.
+
+# Problem statement
+
+Let's say we are working in an application for a factory processing fruits. The plant works with oranges, lemons and limes. For some reason, fruits are mixed together when they enter the factory. Guided by a camera, a robot separates the fruits. Our task is to develop a model that classifies a fruit into one of the three groups given an input image.
+
+This is a multiclass classification problem with $$ K = 3 $$ classes. Each image can be translated into a set of input features $$ x_1, x_2, ..., x_n $$. A full discussion on the feature extraction process is beyond the scope of this post. As an option, we can understand the image as an array of numbers representing color intensities (one per pixel, for a grayscale image), and make each intensity an input feature. Other solutions may involve [autoencoders](https://en.wikipedia.org/wiki/Autoencoder) and [convolutional](https://en.wikipedia.org/wiki/Convolutional_neural_network) architectures. Our target is to predict a label $$ y \in \{0, 1, 2\} $$, with the following criteria:
+
+\begin{align*}
+
+- $$ y = 0 \Rightarrow Orange
+- 
+
+For the purpose of training, we are given a set of $$ m $$ training examples, each one consisting of $$ (x^{(i)}, y^{(i)}) $$ pairs. $$ x^{(i)} \in \mathbb{R}^n $$ is the feature representation of the image number $$ i $$, and $$ y^{(i)}) \in \{0, 1, 2\}
+
+ The image can be translated into a se
+
+Our task is to predict a output label $$ y \in \{0, 1, ..., K-1\} $$ given 
 
 The approach presented above works as long as we deal with binary classification. What if the output label could have more than two values? Imagine that you are building an application that classifies fruit images, distinguishing apples, oranges and pears. Your output label could then take three possible values. This would be a [multiclass classification](https://en.wikipedia.org/wiki/Multiclass_classification) problem.
 
