@@ -215,7 +215,7 @@ I hope you enjoyed it! Feedback and suggestions are always welcome.
 
 ## References
 
-* Deep Learning Specialization, Coursera courses by Andrew Ng: https://www.coursera.org/specializations/deep-learning
+* Deep Learning Specialization, Coursera courses by Andrew Ng: <https://www.coursera.org/specializations/deep-learning>
 * When not to use Neural Networks, by Rahul Bhatia: <https://medium.com/datadriveninvestor/when-not-to-use-neural-networks-89fb50622429>
 * A Gentle Introduction to the Rectified Linear Unit (ReLU), by Jason Brownlee: <https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks/>
 * Sklearn documentation: <https://scikit-learn.org/stable/>

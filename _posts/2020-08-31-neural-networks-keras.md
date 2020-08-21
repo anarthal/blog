@@ -19,3 +19,5 @@ Keras will take care of the optimization process for us. This is fortunate, as t
 - Notes on optimization: gradient descent and similar, mini batches, learning rate
 - MNIST digit recognition: problem statement
 - Intro to keras and the sequential API
+
+https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/

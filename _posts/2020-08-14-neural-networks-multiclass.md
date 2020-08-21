@@ -147,12 +147,13 @@ The matrix $$ \boldsymbol W^{[3]} $$ will be 3x2, thus guaranteeing that both $$
 
 ## Conclusion
 
+That's it! We now have all the elements in place to build a neural network that performs multiclass classification. We've covered the data format, the network architecture and the loss function. These are all the elements we need to specify when creating a network using frameworks like [Keras](https://keras.io/).
 
-
+In the next post we will apply these concepts by using [Keras](https://keras.io/) to create and train a network to solve a classical handwritten digit recognition problem. See you soon!
 
 ## References
 
-
-https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/
-https://towardsdatascience.com/cross-entropy-for-classification-d98e7f974451
-https://towardsdatascience.com/choosing-the-right-encoding-method-label-vs-onehot-encoder-a4434493149b
+* Deep Learning Specialization, Coursera courses by Andrew Ng: <https://www.coursera.org/specializations/deep-learning>
+* Cross-entropy for classification, by Vlastimil Martinek: <https://towardsdatascience.com/cross-entropy-for-classification-d98e7f974451>
+* Choosing the right Encoding method-Label vs OneHot Encoder, by Raheel Shaikh: <https://towardsdatascience.com/choosing-the-right-encoding-method-label-vs-onehot-encoder-a4434493149b>
+* Multi-class Classification — One-vs-All & One-vs-One, by Amey Band: <https://towardsdatascience.com/multi-class-classification-one-vs-all-one-vs-one-94daed32a87b>
