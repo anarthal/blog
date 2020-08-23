@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   {% if page.ogimage %}
-    <meta property="og:image" content="{{ '/assets/img/neural-networks/' | append: page.ogimage | relative_url }}">
+    <meta property="og:image" content="{{ '/assets/img/neural-networks/' | append: page.ogimage | absolute_url }}">
   {% endif %}
 
   <title>
