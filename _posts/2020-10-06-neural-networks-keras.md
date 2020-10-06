@@ -42,15 +42,15 @@ With that in mind, the preferred way to import the library is:
 from tensorflow import keras
 ```
 
-# Keras workflow
-
-There are three steps to perform when working with Keras:
+When building a model with Keras, you should perform these three steps:
 
 1. Define the network architecture. This is just writing in code what we explained before.
 2. Compiling the model. When compiling we specify the loss function, any metrics to be tracked during training, and the optimizer. We will dig into these topics later.
 3. Fitting the model. Here we actually pass in the data so Keras can train the network. The runtime for this step may be long.
 
-## Defining the architecture
+We will go through them in the next sections.
+
+# Defining the architecture
 
 We will be using the [Sequential](https://keras.io/api/models/sequential/) class, which is the easiest when we have a set of sequential layers like us. The model definition looks like the following:
 
@@ -74,7 +74,7 @@ model = keras.Sequential([
 
 Note that the alternative to the sequential class is the [functional API](https://keras.io/guides/functional_api/), which you can employ for more complex architectures.
 
-## Compiling the model
+# Compiling the model
 
 Let's dive into the second step:
 
@@ -92,7 +92,7 @@ This is telling Keras additional information about how to perform the training p
 - It should use the [categorical cross-entropy](https://www.tensorflow.org/api_docs/python/tf/keras/losses/CategoricalCrossentropy) loss function. Check [the previous post]({{ "/posts/neural-networks-multiclass/#the-loss-function" | relative_url }}) if you are not familiar with this loss function.
 - During the training process, Keras will track the [accuracy metric](https://www.tensorflow.org/api_docs/python/tf/keras/metrics/Accuracy). This means it will record the evolution of this score as the network is trained, both for training and validation data. By looking at this information we get insights, like if we are training the network long enough or not. You can specify as many metrics to track as you want. A comprehensive list of available metrics is [here](https://keras.io/api/metrics/).
 
-## Fitting the model
+# Fitting the model
 
 Finally, let's tell Keras to train our network:
 
@@ -103,7 +103,7 @@ y_train = keras.utils.to_categorical(dftrain['label'].values)
 history = model.fit(
     X_train, 
     y_train, 
-    validation_split=0.2, 
+    validation_split=0.2,
     batch_size=128, 
     epochs=50
 )
@@ -117,20 +117,66 @@ history = model.fit(
 - `model.fit()` returns a history object, containing the tracked metrics. We will explore it further in the next section.
 
 
-# Evaluating our model
+# Evaluating the model
+
+By providing validation data with `validation_split`, Keras performs model validation for us while training. By looking at the logs, I'm getting 96.48% accuracy on the train set and a 94.63% on the validation set, which is quite good for a simple network like ours. Note that the decimals may vary for you due to random initialization of weights. Train and validation scores are quite close, so it doesn't seem like our model is overfitting a lot.
+
+Would our model improve if we trained it further? We can examine the returned `history` object to answer this question:
+
+```py
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+```
+
+Note that:
+- `history` is a [keras.callbacks.History](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/History) object.
+- `history.history` is a Python `dict` containing the recorded values for the loss and each defined metric.
+- Each of the four items are Python lists with an element per epoch. In our case, the lists contain 50 elements.
+- `loss` is the value of the loss function for the training set; `val_loss` is the loss function for the validation set.
+- The same applies for `accuracy` and `val_accuracy`.
+
+If we plot these measures against the epoch number, we get the following:
+
+![History]({{ "/assets/img/neural-networks-keras/history.png" | relative_url }})
+
+We can see that the loss goes down sharply at first and then flattens. The accuracy shows the reverse tendency. After 50 epochs, the performance seems almost flat. Thus, training the network longer won't yield much better results. We can also see that both train and validation scores are quite close, which indicates we are not overfitting heavily. 
 
 # Making predictions
 
+You can make predictions for a bunch of examples:
+
+```py
+preds_prob = model.predict(X_test)
+preds_label = preds_prob.argmax(axis=1)
+```
+
+Where `X_test` has the same columns as `X_train`. `predict()` returns an array of probabilities, with 10 columns, one for each class. We can transform that into a label using numpy's [argmax](https://numpy.org/doc/stable/reference/generated/numpy.argmax.html).
+
+Finally, let's inspect both a correct and a wrong prediction:
+
+![Predictions]({{ "/assets/img/neural-networks-keras/predictions.png" | relative_url }})
+
 # Conclusion
+
+This concludes our three-post series on neural networks! Thanks for reading this far. As always, please share, and feedback is always welcome!
 
 # References
 
+* Deep Learning Specialization, Coursera courses by Andrew Ng: <https://www.coursera.org/specializations/deep-learning>.
+* How to attack a machine learning model?, Kaggle kernel by Laura Fink: <https://www.kaggle.com/allunia/how-to-attack-a-machine-learning-model>.
+* Digit Recognizer, Kaggle competition: <https://www.kaggle.com/c/digit-recognizer>.
+* NN-SVG, a tool to draw neural network architectures by Alexander Lenail: <http://alexlenail.me/NN-SVG/index.html>.
+* Keras vs. tf.keras: What’s the difference in TensorFlow 2.0?, by Adrian Rosebrock: <https://www.pyimagesearch.com/2019/10/21/keras-vs-tf-keras-whats-the-difference-in-tensorflow-2-0/>
+* Regularization in Machine Learning, by Prashant Gupta: <https://towardsdatascience.com/regularization-in-machine-learning-76441ddcf99a>.
+* Gentle Introduction to the Adam Optimization Algorithm for Deep Learning, by Jason Brownlee: <https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/>.
+* Batch, Mini Batch & Stochastic Gradient Descent, by Sushant Patrikar: <https://towardsdatascience.com/batch-mini-batch-stochastic-gradient-descent-7a62ecba642a>.
+* Keras official documentation: <https://keras.io/>.
 
-https://www.kaggle.com/allunia/how-to-attack-a-machine-learning-model
-https://www.kaggle.com/c/digit-recognizer
-http://alexlenail.me/NN-SVG/index.html
-https://keras.io/
-https://www.pyimagesearch.com/2019/10/21/keras-vs-tf-keras-whats-the-difference-in-tensorflow-2-0/
-https://towardsdatascience.com/regularization-in-machine-learning-76441ddcf99a
-https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/
-https://towardsdatascience.com/batch-mini-batch-stochastic-gradient-descent-7a62ecba642a
+
+
+
+
+
+
